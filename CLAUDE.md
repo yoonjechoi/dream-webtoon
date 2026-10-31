@@ -15,3 +15,4 @@
 | 2026-10-31 | 씬 구성, 떡밥 회수, 이야기 점검표, 세계관 줄 · 소품 잇기 | story-plan, webtoon-art | 영상 강의와 각본 방식 반영 |
 | 2026-10-31 | 인터뷰에 꿈 코치 단계 반영, 꿈 9컷 추가 | dream-interview, story-plan | 꿈 강의 프롬프트 |
 | 2026-10-31 | 0.2.1: 해설 기본을 그림 바깥으로, 첫 화면 · `/read/` 문서 정리, 개발과 업데이트 안내 | build_site, webtoon-lettering, webtoon-publish, project-schema, README | 글 상자가 그림을 가리고, 문서가 지금 동작과 달라서 |
+| 2026-10-31 | 0.2.2: 컷 번호 디버그 모드(장식 점 단추, 쿠키 저장), 꼬리는 얼굴에서 20px 이상 띄우기 | build_site, webtoon-publish, webtoon-lettering, 테스트 | 고칠 컷을 번호로 말하고, 꼬리가 얼굴의 일부처럼 보여서 |

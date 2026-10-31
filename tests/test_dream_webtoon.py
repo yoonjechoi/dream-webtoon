@@ -212,6 +212,15 @@ class Build(Base):
         self.assertIn('href="read/"', (out / "index.html").read_text(encoding="utf-8"))
         self.assertIn("../img/c1.png", (out / "read/index.html").read_text(encoding="utf-8"))
 
+    def test_cut_numbers_are_hidden_until_debug(self):
+        self.write(cut(7 - 6))
+        out = self.root / "site"
+        build_site.build(self.root, out)
+        html = (out / "index.html").read_text(encoding="utf-8")
+        self.assertIn('<i class="cutno">1</i>', html)
+        self.assertIn(".cutno{display:none", html)
+        self.assertIn('class="dbg"', html)
+
     def test_outside_art_is_refused(self):
         (self.root / "consent.md").write_text("비밀")
         self.write(cut(), characters=[{"image": "consent.md"}])
@@ -248,7 +257,7 @@ class Build(Base):
         out = self.root / "site"
         build_site.build(self.root, out)
         html = (out / "index.html").read_text(encoding="utf-8")
-        self.assertNotIn("<script>", html)
+        self.assertNotIn("red;}", html)
         self.assertNotIn("evil", html)
 
     def test_missing_retake_image_raises(self):

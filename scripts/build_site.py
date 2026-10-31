@@ -19,6 +19,10 @@ MARKS = {"planned": "★", "fix": "◆"}
 FONTS = "https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Dodum&family=Jua&display=swap"
 PLACE_KEYS = ("left", "right", "top", "bottom", "width")
 E = html.escape
+# 제목 아래 장식 점 세 개 중 마지막 점이 단추다. 이것으로 컷 번호를 켜고 끈다. 고칠 컷을 번호로 말하기 위한 것이다
+DEBUG_JS = """(function(){var k='webtoon_debug',b=document.querySelector('.dbg');function s(v){document.body.classList.toggle('debug',v)}
+s(document.cookie.split('; ').indexOf(k+'=1')>=0);
+b.addEventListener('click',function(){var v=!document.body.classList.contains('debug');s(v);document.cookie=k+'='+(v?'1':'0')+';path=/;max-age=31536000;SameSite=Lax'})})();"""
 
 
 def color(palette, key, default):
@@ -68,7 +72,8 @@ def stage_html(cut, prefix):
     inside = "".join(note_html(n) for n in cut.get("notes") or [] if n.get("place", "out") != "out") + balloon_svg(cut)
     ratio = f' style="aspect-ratio:{cut["width"]}/{cut["height"]}"' if cut.get("crop") else ""
     cls = "stage crop" if cut.get("crop") else "stage"
-    return f'<div class="{cls}"{ratio}>{image_html(cut, prefix)}{inside}</div>'
+    number = f'<i class="cutno">{cut["no"]}</i>'
+    return f'<div class="{cls}"{ratio}>{image_html(cut, prefix)}{inside}{number}</div>'
 
 
 def out_notes(cut):
@@ -124,6 +129,10 @@ header{padding-block:56px 40px;display:flex;flex-direction:column;gap:8px}
 .balloon{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .balloon path,.balloon circle{fill:#fff;stroke:#12283b;stroke-width:3;vector-effect:non-scaling-stroke;stroke-linejoin:round}
 .balloon text{fill:#12283b;font-family:var(--talk)}
+.cutno{display:none;position:absolute;right:0;bottom:0;z-index:2;background:#12283b;color:#fff;font:400 13px/1 var(--talk);padding:4px 7px}
+body.debug .cutno{display:block}
+header{position:relative}.orn{position:absolute;right:0;bottom:46px;display:flex;align-items:center;gap:6px}.orn i{width:5px;height:5px;background:var(--deep);opacity:.4}
+.dbg{box-sizing:content-box;width:5px;height:5px;padding:12px;margin:-12px;border:0;background:var(--deep) content-box;opacity:.7;cursor:default}
 .pledge{margin-top:72px;border-top:3px solid var(--ink);padding-top:20px;display:flex;flex-direction:column;gap:6px}
 .pledge b{font:400 1.05rem/1.3 var(--talk);color:var(--deep)}.pledge p{font:400 1.5rem/1.4 var(--title);text-wrap:balance}
 .q{font:400 1.15rem/1.5 var(--talk);margin-top:28px}
@@ -141,7 +150,7 @@ header{padding-block:56px 40px;display:flex;flex-direction:column;gap:8px}
             for x in project["nav"]
         )
         out.append(f'<nav class="bar lang"><span>{E(project.get("short_title", ""))}</span><span class="links">{items}</span></nav>')
-    out.append(f'<header><h1>{head_lines}</h1><p class="en">{E(project.get("subtitle", ""))}</p></header>')
+    out.append(f'<header><h1>{head_lines}</h1><p class="en">{E(project.get("subtitle", ""))}</p><span class="orn"><i></i><i></i><button class="dbg" type="button" aria-label="컷 번호 보기"></button></span></header>')
     out += cuts_html(cuts, prefix)
     pledge = project.get("pledge")
     if pledge:
@@ -153,6 +162,7 @@ header{padding-block:56px 40px;display:flex;flex-direction:column;gap:8px}
         links = [{"text": "이 웹툰은 어떻게 만들었을까? 메이킹북 보기", "href": f"{prefix}making/"}]
     if links:
         out.append('<div class="btns">' + "".join(f'<a class="btn" href="{E(x["href"], quote=True)}">{E(x["text"])}</a>' for x in links) + "</div>")
+    out.append(f"<script>{DEBUG_JS}</script>")
     out.append("</main></body></html>")
     return "\n".join(out)
 
