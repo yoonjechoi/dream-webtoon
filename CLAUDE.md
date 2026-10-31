@@ -14,3 +14,4 @@
 | 2026-10-31 | 한 줄 2컷 그리드, 작품 첫 화면, 어두운 테마 | build_site, check_project, webtoon-lettering | 세로 길이를 줄이고 웹툰답게 하려고 |
 | 2026-10-31 | 씬 구성, 떡밥 회수, 이야기 점검표, 세계관 줄 · 소품 잇기 | story-plan, webtoon-art | 영상 강의와 각본 방식 반영 |
 | 2026-10-31 | 인터뷰에 꿈 코치 단계 반영, 꿈 9컷 추가 | dream-interview, story-plan | 꿈 강의 프롬프트 |
+| 2026-10-31 | 0.2.1: 해설 기본을 그림 바깥으로, 첫 화면 · `/read/` 문서 정리, 개발과 업데이트 안내 | build_site, webtoon-lettering, webtoon-publish, project-schema, README | 글 상자가 그림을 가리고, 문서가 지금 동작과 달라서 |

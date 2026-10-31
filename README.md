@@ -1,5 +1,7 @@
 # dream-webtoon
 
+A Claude Code plugin that turns a warm interview about someone's dream into a vertical-scroll webtoon, a progress board, and a making-of book. The docs are in Korean.
+
 한 사람의 꿈을 따뜻하게 인터뷰해 세로 스크롤 웹툰으로 만들고, 진행 보드와 메이킹북까지 올려 공유하는 Claude Code 플러그인입니다.
 
 ```
@@ -67,8 +69,31 @@ Claude Code에게 말로 시키면 됩니다.
 | 페이지 디자인 | `scripts/build_site.py` |
 | 점검 규칙 | `scripts/check_project.py` |
 
-고친 뒤에는 테스트를 돌리세요.
+## 개발과 업데이트
 
-```bash
-python3 -m unittest discover -s tests
-```
+1. 원본 폴더에서 고칩니다.
+2. 원본 폴더로 띄워서 시험합니다.
+
+   ```bash
+   claude --plugin-dir <원본 폴더>
+   ```
+
+3. 테스트를 돌립니다.
+
+   ```bash
+   python3 -m unittest discover -s tests
+   ```
+
+4. `.claude-plugin/plugin.json` 의 `version` 을 올립니다.
+5. 커밋하고 푸시합니다.
+6. 설치된 플러그인을 업데이트합니다.
+
+   ```bash
+   claude plugin marketplace update dream-webtoon
+   ```
+
+   ```bash
+   claude plugin update dream-webtoon@dream-webtoon
+   ```
+
+7. Claude Code를 다시 시작합니다.

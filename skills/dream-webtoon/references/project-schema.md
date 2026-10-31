@@ -49,7 +49,7 @@
 | `full` | 폭 꽉 채움 |
 | `people` | 사람이 없는 컷이면 `false` |
 | `avoid` | 얼굴 자리 `[[x, y, 폭, 높이], ...]` |
-| `notes` | 해설 `{text, place}`. `place` 는 `"out"` 또는 `{left, top, right, bottom, width}` 퍼센트 |
+| `notes` | 해설 `{text, place}`. `place` 는 `"out"`(기본, 그림 바깥) 또는 `{left, top, right, bottom, width}` 퍼센트 |
 | `balloons` | 풍선 목록 |
 | `planned_text` | 아직 안 그린 컷의 글. 보드에 보인다 |
 
