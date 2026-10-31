@@ -1,0 +1,11 @@
+{
+  "name": "dream-webtoon",
+  "owner": { "name": "yoonjechoi" },
+  "plugins": [
+    {
+      "name": "dream-webtoon",
+      "source": "./",
+      "description": "꿈 인터뷰에서 웹툰 · 보드 · 메이킹북까지 만드는 하네스."
+    }
+  ]
+}
