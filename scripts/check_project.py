@@ -11,6 +11,7 @@ from pathlib import Path
 
 PHONE = 343  # 컷이 놓이는 휴대폰 폭(px)
 PHONE_FULL = 375  # 폭을 꽉 채운 컷
+PHONE_HALF = 167  # 한 줄 2컷의 한 칸
 MIN_PX = 14
 
 
@@ -111,7 +112,7 @@ def check(root, publish=False):
         people = c.get("people", True)
         if people and not avoid and (c.get("balloons") or any(n.get("place", "out") != "out" for n in c.get("notes") or [])):
             warns.append(f"{tag}: 글이 그림 위에 있는데 avoid(얼굴 자리)가 없어 가림을 점검하지 못했습니다")
-        phone = (PHONE_FULL if c.get("full") else PHONE) / w
+        phone = (PHONE_FULL if c.get("full") else PHONE_HALF if c.get("half") else PHONE) / w
         for b in c.get("balloons") or []:
             problem = valid_balloon(b)
             if problem:

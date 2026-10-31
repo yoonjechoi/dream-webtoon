@@ -36,7 +36,7 @@ def head(project, title, extra="", og_image=""):
 <meta property="og:title" content="{E(title)}"><meta property="og:description" content="{E(project.get('subtitle', ''))}">{og}
 <link rel="stylesheet" href="{FONTS}">
 <style>
-:root{{--bg:{color(p, 'bg', '#a9d3f2')};--pale:{color(p, 'pale', '#e4f2fc')};--deep:{color(p, 'deep', '#1f5f94')};--ink:{color(p, 'ink', '#12283b')};--paper:#fff;
+:root{{--bg:{color(p, 'bg', '#a9d3f2')};--pale:{color(p, 'pale', '#e4f2fc')};--deep:{color(p, 'deep', '#1f5f94')};--ink:{color(p, 'ink', '#12283b')};--paper:{color(p, 'paper', '#ffffff')};--note-bg:{color(p, 'note_bg', '#ffffff')};--note-ink:{color(p, 'note_ink', '#12283b')};
 --title:"Black Han Sans","Apple SD Gothic Neo",sans-serif;--talk:"Jua","Apple SD Gothic Neo",sans-serif;--note:"Gowun Dodum","Apple SD Gothic Neo",sans-serif;
 --gl:max(16px,env(safe-area-inset-left,0px));--gr:max(16px,env(safe-area-inset-right,0px))}}
 *{{box-sizing:border-box}}html,body{{margin:0}}img{{max-width:100%;display:block}}p{{margin:0}}
@@ -57,32 +57,73 @@ def note_html(note):
     return f'<figcaption class="note" style="{style}">{text}</figcaption>'
 
 
-def cut_html(cut):
-    notes = cut.get("notes") or []
+def image_html(cut, prefix):
+    focus = cut.get("focus") or [50, 50]
+    style = f' style="object-position:{float(focus[0]):g}% {float(focus[1]):g}%"' if cut.get("crop") else ""
+    alt = E(cut.get("scene", ""), quote=True)
+    return f'<img src="{prefix}img/{Path(cut["image"]).name}" alt="{alt}" loading="lazy" width="{cut["width"]}" height="{cut["height"]}"{style}>'
+
+
+def stage_html(cut, prefix):
+    inside = "".join(note_html(n) for n in cut.get("notes") or [] if n.get("place", "out") != "out") + balloon_svg(cut)
+    ratio = f' style="aspect-ratio:{cut["width"]}/{cut["height"]}"' if cut.get("crop") else ""
+    cls = "stage crop" if cut.get("crop") else "stage"
+    return f'<div class="{cls}"{ratio}>{image_html(cut, prefix)}{inside}</div>'
+
+
+def out_notes(cut):
+    return [n for n in cut.get("notes") or [] if n.get("place", "out") == "out"]
+
+
+def cut_html(cut, prefix=""):
     cls = "panel full" if cut.get("full") else "panel frame"
-    img = f'<img src="img/{Path(cut["image"]).name}" alt="{E(cut.get("scene", ""), quote=True)}" loading="lazy" width="{cut["width"]}" height="{cut["height"]}">'
-    outside = "".join(note_html(n) for n in notes if n.get("place", "out") == "out")
-    inside = "".join(note_html(n) for n in notes if n.get("place", "out") != "out") + balloon_svg(cut)
+    outside = "".join(note_html(n) for n in out_notes(cut))
     gap = GAPS.get(cut.get("gap_after", "medium"), 52)
-    return f'<figure class="{cls}">{outside}<div class="stage">{img}{inside}</div></figure><div style="height:{gap}px"></div>'
+    return f'<figure class="{cls}">{outside}{stage_html(cut, prefix)}</figure><div style="height:{gap}px"></div>'
 
 
-def webtoon(project, cuts):
+def pair_html(left, right, prefix=""):
+    """한 줄 2컷. 해설은 두 칸 위에 함께 놓아 칸 높이를 맞춘다."""
+    notes = "".join(note_html(n) for n in out_notes(left) + out_notes(right))
+    gap = GAPS.get(right.get("gap_after", "medium"), 52)
+    cells = "".join(f'<figure class="panel frame">{stage_html(c, prefix)}</figure>' for c in (left, right))
+    top = f'<div class="panel rowcap">{notes}</div>' if notes else ""
+    return f'{top}<div class="pair">{cells}</div><div style="height:{gap}px"></div>'
+
+
+def cuts_html(cuts, prefix=""):
+    out, i = [], 0
+    while i < len(cuts):
+        if cuts[i].get("half") and i + 1 < len(cuts) and cuts[i + 1].get("half"):
+            out.append(pair_html(cuts[i], cuts[i + 1], prefix))
+            i += 2
+        else:
+            out.append(cut_html(cuts[i], prefix))
+            i += 1
+    return out
+
+
+def webtoon(project, cuts, prefix="", home=""):
     css = """
 body{background:var(--bg);color:var(--ink);font:17px/1.6 var(--note);padding-block:0 72px;padding-left:var(--gl);padding-right:var(--gr);overflow-x:hidden}
 main{max-width:480px;margin:0 auto;display:flex;flex-direction:column}
 header{padding-block:56px 40px;display:flex;flex-direction:column;gap:8px}
 .en{font:400 1rem/1.3 var(--talk);color:var(--deep)}
-.panel{margin:0;line-height:0}.stage{position:relative}.panel img{width:100%;height:auto}
-.frame img{border:3px solid var(--ink)}
+.panel{margin:0;line-height:0;min-width:0}.stage{position:relative;overflow:hidden}.panel img{width:100%;height:auto}
+.stage.crop img{height:100%;object-fit:cover}
+.frame .stage{border-radius:var(--radius);border:var(--frame)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rowcap{margin-bottom:-3px}
+.bar{display:flex;justify-content:space-between;align-items:center;padding-block:12px;font:400 1rem/1.3 var(--talk)}.bar a{text-decoration:none}
+.links{display:flex;gap:6px}.links a,.links b{font:400 .95rem/1.2 var(--talk);padding:7px 12px;border-radius:999px;border:1.5px solid var(--deep)}.links b{background:var(--deep);color:var(--bg)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.btn{background:var(--deep);color:var(--bg);text-decoration:none;border-radius:999px;padding:9px 18px;font:400 1rem/1.3 var(--talk)}
 .full{margin-left:calc(-1*var(--gl));margin-right:calc(-1*var(--gr))}
 @media (min-width:520px){.full{margin-left:-24px;margin-right:-24px}}
-.note{position:absolute;background:var(--paper);border:2.5px solid var(--ink);padding:7px 11px;font:700 clamp(14px,3.9vw,17px)/1.42 var(--note);word-break:keep-all}
+.note{position:absolute;background:var(--note-bg);color:var(--note-ink);border:2.5px solid var(--note-ink);padding:7px 11px;font:700 clamp(14px,3.9vw,17px)/1.42 var(--note);word-break:keep-all}
 .panel:has(.out){display:flex;flex-direction:column}
 .note.out{position:static;align-self:flex-start;max-width:92%;margin-bottom:-3px}
 .balloon{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.balloon path,.balloon circle{fill:#fff;stroke:var(--ink);stroke-width:3;vector-effect:non-scaling-stroke;stroke-linejoin:round}
-.balloon text{fill:var(--ink);font-family:var(--talk)}
+.balloon path,.balloon circle{fill:#fff;stroke:#12283b;stroke-width:3;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.balloon text{fill:#12283b;font-family:var(--talk)}
 .pledge{margin-top:72px;border-top:3px solid var(--ink);padding-top:20px;display:flex;flex-direction:column;gap:6px}
 .pledge b{font:400 1.05rem/1.3 var(--talk);color:var(--deep)}.pledge p{font:400 1.5rem/1.4 var(--title);text-wrap:balance}
 .q{font:400 1.15rem/1.5 var(--talk);margin-top:28px}
@@ -90,15 +131,59 @@ header{padding-block:56px 40px;display:flex;flex-direction:column;gap:8px}
     first = next((Path(c["image"]).name for c in cuts if c.get("full")), Path(cuts[0]["image"]).name if cuts else "")
     title = project["title"]
     head_lines = E(title).replace(": ", ":<br>")
+    css += f":root{{--radius:{'12px' if project.get('round') else '0'};--frame:{'0' if project.get('round') else '3px solid var(--ink)'}}}\n"
     out = [head(project, title, css, f"img/{first}"), "<main>"]
+    if home:
+        out.append(f'<nav class="bar"><a href="{home}">← {E(project.get("home_label", "처음으로"))}</a><span>{len(cuts)}컷</span></nav>')
+    if project.get("nav"):
+        items = "".join(
+            f'<b aria-current="page">{E(x["text"])}</b>' if x.get("current") else f'<a href="{E(x["href"], quote=True)}">{E(x["text"])}</a>'
+            for x in project["nav"]
+        )
+        out.append(f'<nav class="bar lang"><span>{E(project.get("short_title", ""))}</span><span class="links">{items}</span></nav>')
     out.append(f'<header><h1>{head_lines}</h1><p class="en">{E(project.get("subtitle", ""))}</p></header>')
-    out += [cut_html(c) for c in cuts]
+    out += cuts_html(cuts, prefix)
     pledge = project.get("pledge")
     if pledge:
         out.append(f'<section class="pledge"><b>{E(pledge["label"])}</b><p>{E(pledge["text"])}</p></section>')
     if project.get("question"):
         out.append(f'<p class="q">{E(project["question"])}</p>')
-    out.append('<p class="q"><a href="making/">이 웹툰은 어떻게 만들었을까? 메이킹북 보기</a></p></main></body></html>')
+    links = project.get("end_links")
+    if links is None:
+        links = [{"text": "이 웹툰은 어떻게 만들었을까? 메이킹북 보기", "href": f"{prefix}making/"}]
+    if links:
+        out.append('<div class="btns">' + "".join(f'<a class="btn" href="{E(x["href"], quote=True)}">{E(x["text"])}</a>' for x in links) + "</div>")
+    out.append("</main></body></html>")
+    return "\n".join(out)
+
+
+def home_page(project):
+    """작품 첫 화면. 표지, 소개, 막 목록."""
+    info = project["home"]
+    cover = Path(info["cover"]).name
+    css = f"""
+body{{background:var(--bg);color:var(--ink);font:17px/1.65 var(--note)}}
+.hero{{position:relative;min-height:min(78vh,620px);display:flex;align-items:flex-end;background:url(img/{cover}) center 30%/cover}}
+.hero:after{{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,var(--bg))}}
+.in{{position:relative;z-index:1;padding:24px var(--gr) 24px var(--gl);max-width:900px;margin:0 auto;width:100%}}
+h1{{color:var(--deep)}}
+.btns{{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}}.btn{{background:var(--deep);color:var(--bg);text-decoration:none;border-radius:999px;padding:10px 20px;font:400 1rem/1.3 var(--talk)}}.btn.o{{background:var(--paper);color:var(--ink)}}
+h2{{max-width:900px;margin:18px auto 10px;padding-left:var(--gl);padding-right:var(--gr)}}
+.rail{{display:flex;gap:12px;overflow-x:auto;padding:4px var(--gr) 56px var(--gl);max-width:932px;margin:0 auto}}
+.card{{flex:0 0 200px;background:var(--paper);border-radius:14px;overflow:hidden}}.card img{{width:200px;height:230px;object-fit:cover}}.card div{{padding:10px 12px}}.card b{{font:400 1.05rem/1.3 var(--talk);display:block}}.card span{{font-size:.85rem}}
+"""
+    out = [head(project, project["title"], css, f"img/{cover}")]
+    title = E(project["title"]).replace(": ", ":<br>")
+    links = "".join(
+        f'<a class="btn{" o" if i else ""}" href="{E(x["href"], quote=True)}">{E(x["text"])}</a>' for i, x in enumerate(info["links"])
+    )
+    out.append(f'<section class="hero"><div class="in"><h1>{title}</h1><p>{E(info["blurb"])}</p><div class="btns">{links}</div></div></section>')
+    if info.get("acts"):
+        out.append(f'<h2>{E(info.get("acts_title", "이야기"))}</h2><div class="rail">')
+        for a in info["acts"]:
+            out.append(f'<article class="card"><img src="img/{Path(a["image"]).name}" alt="" loading="lazy"><div><b>{E(a["title"])}</b><span>{E(a["text"])}</span></div></article>')
+        out.append("</div>")
+    out.append("</body></html>")
     return "\n".join(out)
 
 
@@ -187,7 +272,7 @@ tfoot td{font-weight:700;border-bottom:0}
 ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
 """
     out = [head(project, f"{project['title']} 메이킹북", css), "<main>"]
-    out.append(f'<header><p><a href="../">← 웹툰으로 돌아가기</a></p><h1>메이킹북</h1><p>{E(project.get("making_intro", "인터뷰 한 번이 웹툰이 되기까지의 기록이에요."))}</p></header>')
+    out.append(f'<header><p><a href="../">← 처음으로</a></p><h1>메이킹북</h1><p>{E(project.get("making_intro", "인터뷰 한 번이 웹툰이 되기까지의 기록이에요."))}</p></header>')
     qa = project.get("interview") or []
     if qa:
         out.append('<section><p class="stage">인터뷰</p><h2>묻고 답했어요</h2><div class="qa">')
@@ -223,7 +308,7 @@ ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
         out.append('<section><p class="stage">시행착오</p><h2>이번에 배운 것</h2><ul>')
         out += [f"<li>{E(x)}</li>" for x in lessons]
         out.append("</ul></section>")
-    out.append('<p><a href="../">← 웹툰 다시 보기</a></p></main></body></html>')
+    out.append('<p><a href="../">← 처음으로</a></p></main></body></html>')
     return "\n".join(out)
 
 
@@ -261,12 +346,22 @@ def build(root, out, only=None):
         if seen.setdefault(src.name, src) != src:
             raise ValueError(f"그림 이름이 겹칩니다: {src.name}")
         shutil.copy2(src, out / "img" / src.name)
+    if project.get("home") and only != "board":
+        images = [project["home"]["cover"]] + [a["image"] for a in project["home"].get("acts") or []]
+        for name in images:
+            src = safe_image(root, name)
+            shutil.copy2(src, out / "img" / src.name)
     pages = {"board/index.html": board(project, has_image)}
     if only == "board":
-        for stale in ("index.html", "making/index.html"):
+        for stale in ("index.html", "read/index.html", "making/index.html"):
             (out / stale).unlink(missing_ok=True)
     else:
-        pages.update({"index.html": webtoon(project, ready), "making/index.html": making(project)})
+        pages["making/index.html"] = making(project)
+        if project.get("home"):
+            pages["index.html"] = home_page(project)
+            pages["read/index.html"] = webtoon(project, ready, "../", "../")
+        else:
+            pages["index.html"] = webtoon(project, ready)
     for rel, text in pages.items():
         path = out / rel
         path.parent.mkdir(parents=True, exist_ok=True)

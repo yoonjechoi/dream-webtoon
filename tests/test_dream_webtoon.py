@@ -91,6 +91,10 @@ class Check(Base):
         self.write(cut(width=1344, height=752, notes=[{"text": "해설", "place": {"left": 4, "top": 6}}]))
         self.assertTrue(any("가로 컷" in e for e in self.errors()))
 
+    def test_half_cell_needs_bigger_text(self):
+        self.write(cut(half=True, crop=True, width=1000, height=1250, balloons=[talk(size=60, rx=300, ry=120, cx=400, cy=200)]))
+        self.assertTrue(any("px" in e for e in self.errors()))
+
     def test_small_text_fails(self):
         self.write(cut(width=1344, height=752, balloons=[talk(size=40)]))
         self.assertTrue(any("px" in e for e in self.errors()))
@@ -183,6 +187,30 @@ class Build(Base):
         build_site.build(self.root, out)
         self.assertTrue((out / "img/c1.png").exists())
         self.assertIn("../img/c1.png", (out / "making/index.html").read_text(encoding="utf-8"))
+
+    def test_half_cuts_share_a_row(self):
+        self.write(cut(1, half=True, crop=True), cut(2, half=True, crop=True, focus=[30, 50]), cut(3))
+        out = self.root / "site"
+        build_site.build(self.root, out)
+        html = (out / "index.html").read_text(encoding="utf-8")
+        self.assertEqual(html.count('class="pair"'), 1)
+        self.assertIn("object-position:30% 50%", html)
+
+    def test_language_nav_marks_current(self):
+        self.write(cut(), nav=[{"text": "한국어", "current": True}, {"text": "English", "href": "en/"}], short_title="작품")
+        out = self.root / "site"
+        build_site.build(self.root, out)
+        html = (out / "index.html").read_text(encoding="utf-8")
+        self.assertIn('<b aria-current="page">한국어</b>', html)
+        self.assertIn('<a href="en/">English</a>', html)
+
+    def test_home_moves_reader_to_read_folder(self):
+        self.write(cut(), home={"cover": "art/c1.png", "blurb": "b", "links": [{"text": "읽기", "href": "read/"}],
+                                "acts": [{"title": "1막", "text": "t", "image": "art/c1.png"}]})
+        out = self.root / "site"
+        build_site.build(self.root, out)
+        self.assertIn('href="read/"', (out / "index.html").read_text(encoding="utf-8"))
+        self.assertIn("../img/c1.png", (out / "read/index.html").read_text(encoding="utf-8"))
 
     def test_outside_art_is_refused(self):
         (self.root / "consent.md").write_text("비밀")

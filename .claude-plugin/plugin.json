@@ -1,6 +1,6 @@
 {
   "name": "dream-webtoon",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "한 사람의 꿈을 따뜻하게 인터뷰해 스토리 설계, 캐릭터, 작화, 예쁜 말풍선, 세로 스크롤 웹툰, 진행 보드, 메이킹북까지 만들어 공유한다. 카톡방에서 진행할 수도 있다.",
   "author": { "name": "yoonjechoi" },
   "keywords": ["webtoon", "interview", "storytelling", "higgsfield", "korean"],

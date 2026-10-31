@@ -15,7 +15,7 @@
 | 칸 | 뜻 |
 |---|---|
 | `title` · `subtitle` | 제목과 부제. 제목에 `: ` 이 있으면 그 뒤에서 줄을 바꾼다 |
-| `palette` | `bg` · `pale` · `deep` · `ink`. 본인이 고른 색에서 만든다 |
+| `palette` | `bg` · `pale` · `deep` · `ink` · `paper` · `note_bg` · `note_ink`. 본인이 고른 색에서 만든다 |
 | `site_url` | 배포 주소. 미리보기 이미지에 쓴다 |
 | `price_per_image` | 그림 한 장 크레딧 |
 | `stages` | `{name, status: done·doing·waiting, note}` 보드의 진행 단계 |
@@ -28,6 +28,9 @@
 | `cost_notes` | 비용 표 아래 설명 문장. 잔액 대조, 재지 못한 비용 |
 | `lessons` | 시행착오 문장 |
 | `making_intro` | 메이킹북 첫 문장 |
+| `home` | 작품 첫 화면 `{cover, blurb, links, acts_title, acts}`. 있으면 웹툰이 `/read/` 로 옮겨 간다 |
+| `nav` · `short_title` | 맨 위 언어 선택 `[{text, href, current}]`, 왼쪽 짧은 제목 |
+| `round` · `home_label` · `end_links` | 둥근 컷, 돌아가기 글, 웹툰 끝 버튼 `[{text, href}]` |
 | `cuts` | 아래 컷 목록 |
 
 ## cuts 한 칸
@@ -41,6 +44,7 @@
 | `status` | `done` 그림 있음, `planned` 그릴 컷, `fix` 고칠 컷 |
 | `image` · `width` · `height` | 프로젝트 폴더 기준 경로와 좌표 기준 크기. 풍선 좌표는 이 크기로 적는다. 그림과 비율이 같아야 한다 |
 | `ratio` | 그릴 비율 |
+| `half` · `crop` · `focus` | 한 줄 2컷의 칸, 잘라 쓰기, 자를 기준 `[x%, y%]`. 자르면 `width` · `height` 가 칸 좌표가 된다 (보통 1000 · 1250) |
 | `gap_after` | `none` · `short` · `medium` · `long` · `xlong` 다음 컷까지 간격 |
 | `full` | 폭 꽉 채움 |
 | `people` | 사람이 없는 컷이면 `false` |
