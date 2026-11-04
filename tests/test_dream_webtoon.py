@@ -136,6 +136,18 @@ class Check(Base):
         self.write(*[cut(n, evidence="staged") for n in range(1, 4)])
         self.assertTrue(any("연출" in w for w in self.warns()))
 
+    def test_short_story_warns_cut_count(self):
+        self.write(*[cut(n) for n in range(1, 21)])
+        self.assertTrue(any("40~45컷" in w for w in self.warns()))
+
+    def test_enough_cuts_no_count_warn(self):
+        self.write(*[cut(n, status="planned", image=None) for n in range(1, 43)])
+        self.assertFalse(any("40~45컷" in w for w in self.warns()))
+
+    def test_nine_cut_grid_no_count_warn(self):
+        self.write(*[cut(n) for n in range(1, 10)])
+        self.assertFalse(any("40~45컷" in w for w in self.warns()))
+
     def test_long_tail_warns(self):
         self.write(cut(balloons=[talk(tip=[880, 1100])]))
         self.assertTrue(any("꼬리가 깁니다" in w for w in self.warns()))

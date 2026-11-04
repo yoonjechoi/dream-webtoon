@@ -13,6 +13,8 @@ PHONE = 343  # 컷이 놓이는 휴대폰 폭(px)
 PHONE_FULL = 375  # 폭을 꽉 채운 컷
 PHONE_HALF = 167  # 한 줄 2컷의 한 칸
 MIN_PX = 14
+MIN_CUTS = 40  # 기본 40~45컷. 20컷은 짧다
+GRID_CUTS = 9  # 짧은 판(꿈 9컷 그리드)
 
 
 def balloon_box(b):
@@ -154,6 +156,8 @@ def check(root, publish=False):
             if n.get("place", "out") != "out" and w > h:
                 errors.append(f"{tag}: 가로 컷의 해설은 그림을 가립니다. place 를 out 으로 하세요")
 
+    if cuts and len(cuts) < MIN_CUTS and len(cuts) != GRID_CUTS:
+        warns.append(f"전체 {len(cuts)}컷입니다. 기본은 40~45컷입니다. 사람이 정한 숫자면 그대로 두세요")
     staged = sum(1 for c in cuts if c.get("evidence") == "staged")
     if cuts and staged / len(cuts) > 0.4:
         warns.append(f"전체 {len(cuts)}컷 중 {staged}컷이 연출입니다. 본인에게 더 물어 사실로 바꿀 수 있는지 보세요")

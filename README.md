@@ -23,7 +23,7 @@ claude plugin install dream-webtoon@dream-webtoon
 - Claude Code, Python 3
 - 힉스필드 연결 (그림). 유료 크레딧이 듭니다
 - Vercel CLI (공개). 없으면 아티팩트로 올립니다
-- iris-room 플러그인 (선택). 카톡방에서 인터뷰할 때. 세션 두 개를 씁니다
+- iris-room 플러그인 (선택). 카톡방이나 오픈프로필 1:1에서 인터뷰할 때. 세션 두 개를 씁니다
 
 ## 쓰는 법
 
@@ -38,8 +38,8 @@ claude plugin install dream-webtoon@dream-webtoon
 | 스킬 | 하는 일 |
 |---|---|
 | `dream-webtoon` | 전체 과정 |
-| `dream-interview` | 한 번에 하나씩 묻는 따뜻한 인터뷰 |
-| `story-plan` | 스토리브랜드로 이야기와 콘티 설계 |
+| `dream-interview` | 질문 10개 · 단계 다섯의 따뜻한 인터뷰. 셀카를 먼저 받는다 |
+| `story-plan` | 스토리브랜드로 이야기와 콘티 설계. 기본 42컷 |
 | `webtoon-art` | 캐릭터와 컷 그림 |
 | `webtoon-lettering` | 말풍선과 세로 스크롤 편집 |
 | `webtoon-publish` | 웹툰, 보드, 메이킹북 공개 |
