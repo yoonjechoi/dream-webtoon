@@ -135,19 +135,26 @@ class Check(Base):
 
     def test_many_staged_cuts_warn(self):
         self.write(*[cut(n, evidence="staged") for n in range(1, 4)])
-        self.assertTrue(any("연출" in w for w in self.warns()))
+        self.assertTrue(any("연출" in w and "20~26컷으로 줄이세요" in w for w in self.warns()))
 
-    def test_short_story_warns_cut_count(self):
-        self.write(*[cut(n) for n in range(1, 21)])
-        self.assertTrue(any("40~45컷" in w for w in self.warns()))
+    def test_off_range_cut_count_warns(self):
+        for count in (12, 30, 47):
+            self.write(*[cut(n, status="planned", image=None) for n in range(1, count + 1)])
+            self.assertTrue(any("20~26컷" in w and "40~46컷" in w for w in self.warns()), count)
+
+    def test_short_version_no_count_warn(self):
+        for count in (20, 24, 26):
+            self.write(*[cut(n, status="planned", image=None) for n in range(1, count + 1)])
+            self.assertFalse(any("40~46컷" in w for w in self.warns()), count)
 
     def test_enough_cuts_no_count_warn(self):
-        self.write(*[cut(n, status="planned", image=None) for n in range(1, 43)])
-        self.assertFalse(any("40~45컷" in w for w in self.warns()))
+        for count in (40, 42, 46):
+            self.write(*[cut(n, status="planned", image=None) for n in range(1, count + 1)])
+            self.assertFalse(any("40~46컷" in w for w in self.warns()), count)
 
     def test_nine_cut_grid_no_count_warn(self):
         self.write(*[cut(n) for n in range(1, 10)])
-        self.assertFalse(any("40~45컷" in w for w in self.warns()))
+        self.assertFalse(any("40~46컷" in w for w in self.warns()))
 
     def test_long_tail_warns(self):
         self.write(cut(balloons=[talk(tip=[880, 1100])]))

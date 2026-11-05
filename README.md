@@ -5,7 +5,7 @@ A Claude Code plugin that turns a warm interview about someone's dream into a ve
 한 사람의 꿈을 따뜻하게 인터뷰해 세로 스크롤 웹툰으로 만들고, 진행 보드와 메이킹북까지 올려 공유하는 Claude Code 플러그인입니다.
 
 ```
-셀카 → 캐스팅 → 인터뷰 → 이야기 설계 → 작화 → 말풍선 → 검수 → 완성 검토(수정 3번) → 후기 · 공개 동의 → 공개
+셀카 → 캐스팅 → 인터뷰 → 이야기 설계(짧으면 더 들려주기) → 작화 → 말풍선 → 검수 → 완성 검토(수정 3번) → 후기 · 공개 동의 → 공개
 ```
 
 ## 설치
@@ -39,7 +39,7 @@ claude plugin install dream-webtoon@dream-webtoon
 |---|---|
 | `dream-webtoon` | 전체 과정 |
 | `dream-interview` | 질문 10개 · 단계 다섯의 따뜻한 인터뷰. 셀카를 먼저 받는다 |
-| `story-plan` | 스토리브랜드로 이야기와 콘티 설계. 기본 42컷 |
+| `story-plan` | 스토리브랜드로 이야기와 콘티 설계. 재료에 맞춰 20~26컷 또는 40~46컷 |
 | `webtoon-art` | 캐릭터와 컷 그림 |
 | `webtoon-lettering` | 말풍선과 세로 스크롤 편집 |
 | `webtoon-publish` | 웹툰, 보드, 메이킹북 공개 |
