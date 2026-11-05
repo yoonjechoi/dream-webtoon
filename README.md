@@ -39,7 +39,7 @@ claude plugin install dream-webtoon@dream-webtoon
 |---|---|
 | `dream-webtoon` | 전체 과정 |
 | `dream-interview` | 질문 10개 · 단계 다섯의 따뜻한 인터뷰. 셀카를 먼저 받는다 |
-| `story-plan` | 스토리브랜드로 이야기와 콘티 설계. 재료에 맞춰 20~26컷 또는 40~46컷 |
+| `story-plan` | 스토리브랜드로 이야기와 콘티 설계. 재료만큼 20~46컷 |
 | `webtoon-art` | 캐릭터와 컷 그림 |
 | `webtoon-lettering` | 말풍선과 세로 스크롤 편집 |
 | `webtoon-publish` | 웹툰, 보드, 메이킹북 공개 |

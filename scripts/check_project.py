@@ -13,7 +13,7 @@ PHONE = 343  # 컷이 놓이는 휴대폰 폭(px)
 PHONE_FULL = 375  # 폭을 꽉 채운 컷
 PHONE_HALF = 167  # 한 줄 2컷의 한 칸
 MIN_PX = 14
-CUT_RANGES = ((9, 9), (20, 26), (40, 46))  # 꿈 9컷 그리드 · 짧은 판 · 기본. 46컷을 넘지 않는다
+CUT_RANGES = ((9, 9), (20, 46))  # 꿈 9컷 그리드 · 재료만큼. 46컷을 넘지 않는다
 
 
 def balloon_box(b):
@@ -156,10 +156,10 @@ def check(root, publish=False):
                 errors.append(f"{tag}: 가로 컷의 해설은 그림을 가립니다. place 를 out 으로 하세요")
 
     if cuts and not any(lo <= len(cuts) <= hi for lo, hi in CUT_RANGES):
-        warns.append(f"전체 {len(cuts)}컷입니다. 짧은 판은 20~26컷, 기본은 40~46컷이고 46컷을 넘지 않습니다. 46 이하에서 사람이 정한 숫자면 그대로 두세요")
+        warns.append(f"전체 {len(cuts)}컷입니다. 컷 수는 20~46컷 사이에서 재료만큼 정하고, 46컷을 넘지 않습니다. 꿈 9컷은 예외입니다")
     staged = sum(1 for c in cuts if c.get("evidence") == "staged")
     if cuts and staged / len(cuts) > 0.4:
-        warns.append(f"전체 {len(cuts)}컷 중 {staged}컷이 연출입니다. 40% 이하가 되게 더 묻거나 20~26컷으로 줄이세요")
+        warns.append(f"전체 {len(cuts)}컷 중 {staged}컷이 연출입니다. 40% 이하가 되게 더 묻거나 컷 수를 줄이세요")
     for r in project.get("retakes") or []:
         for key in ("before", "after"):
             if not (root / r[key]).is_file():
