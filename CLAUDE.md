@@ -17,3 +17,4 @@
 | 2026-10-31 | 0.2.1: 해설 기본을 그림 바깥으로, 첫 화면 · `/read/` 문서 정리, 개발과 업데이트 안내 | build_site, webtoon-lettering, webtoon-publish, project-schema, README | 글 상자가 그림을 가리고, 문서가 지금 동작과 달라서 |
 | 2026-10-31 | 0.2.2: 컷 번호 디버그 모드(장식 점 단추, 쿠키 저장), 꼬리는 얼굴에서 20px 이상 띄우기 | build_site, webtoon-publish, webtoon-lettering, 테스트 | 고칠 컷을 번호로 말하고, 꼬리가 얼굴의 일부처럼 보여서 |
 | 2026-11-04 | 0.3.0: 질문 10개 · 단계 다섯 지도와 질문 머리, 예시 답 대신 답의 종류, 이어서/오늘은 여기까지, 셀카 먼저, 존댓말 기본, 기본 42컷(40~45), 오픈프로필 1:1, 진행 화면 링크 | dream-interview, dream-webtoon, story-plan, webtoon-art, check_project, 테스트 | 실제 운영에서 인터뷰가 길고 지루했고, 20컷은 짧았고, 닮음이 핵심이라서 |
+| 2026-11-05 | 0.3.1: 셀카 → 캐스팅 → (결제 자리) → 인터뷰 순서, 그림 없는 설계 컨펌 없애고 완성 검토 · 수정 3번, 후기 · 공개 동의 · 릴레이, 인터뷰/제작 세션 분리와 「[꿈웹툰 정리]」(`iris_room.py summary`), 운영 설정, 셀카 화면 거울 · 확정, 사진 받으면 먼저 한 줄, 세션 넘길 때 안내 | dream-webtoon, dream-interview, story-plan, webtoon-art, webtoon-publish, iris_room, 테스트 | 실제 손님 시험 피드백 |
